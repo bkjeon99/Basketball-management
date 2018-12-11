@@ -33,7 +33,6 @@ public class TimebuttonListener implements ActionListener {
 			threadlive = 3;
 			forfoul ++;
 		}
-		System.out.println(threadlive);
 	}
 
 }
