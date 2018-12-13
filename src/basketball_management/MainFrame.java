@@ -13,7 +13,7 @@ public class MainFrame extends JFrame{
  	private int Teamstate;
 	private int Playernumstate;
 	private int eventstate;
-	private int [] count= {0, 1};//입력받은 팀의 선수 명수
+	private int [] count= {0, 0};//입력받은 팀의 선수 명수
 	
 	public MainFrame() {
 		setTitle("basketball management");
@@ -29,15 +29,17 @@ public class MainFrame extends JFrame{
         management.add(timepanel, BorderLayout.NORTH);
 
         // A팀과 B팀 선수를 보여줄 패널
+        int [] team_score = {0,0};
+        
         JTextArea TeamA_Record = new JTextArea(10, 12);
-        JLabel TeamA_R = new JLabel("Team A");
+        JLabel TeamA_R = new JLabel("Team A : " + team_score[0]);
         JPanel Westpanel = new JPanel();
         Westpanel.setLayout(new BorderLayout());
         Westpanel.add(TeamA_R, BorderLayout.NORTH);
         Westpanel.add(new JScrollPane(TeamA_Record), BorderLayout.CENTER);
         
 		JTextArea TeamB_Record = new JTextArea(10, 12);
-    	JLabel TeamB_R = new JLabel("Team B");
+    	JLabel TeamB_R = new JLabel("Team B : "+ team_score[1]);
 		JPanel Eastpanel = new JPanel();
 	    Eastpanel.setLayout(new BorderLayout());
 	    Eastpanel.add(TeamB_R, BorderLayout.NORTH);
@@ -98,7 +100,7 @@ public class MainFrame extends JFrame{
 				JTextField num = (JTextField)e.getSource();
 				try {
 					Playernumstate = Integer.parseInt(num.getText());
-					label.setText("선수 번호 입력 후 enterkey를 누르시오");
+					label.setText("선수 번호(99 이하) 입력 후 enterkey를 누르시오");
 				} catch (NumberFormatException a) {
 					label.setText("올바르지 않은 입력입니다");
 				}
@@ -171,8 +173,9 @@ public class MainFrame extends JFrame{
 		class EnterListener extends MouseAdapter {		
 			public void mouseClicked(MouseEvent e) {
 				NoTeam.setSelected(true);
-				Playernumber.setText(" ");
-				NoEvent.setSelected(true); 
+				Playernumber.setText("");
+				NoEvent.setSelected(true);
+				if(Playernumstate <=0 || Playernumstate >= 100 ) return;
 				
 				int state = 0;
 				System.out.println(state);
@@ -183,13 +186,16 @@ public class MainFrame extends JFrame{
 						switch(eventstate) {
 						case 0 :
 							((Vector<Player>)team[Teamstate]).get(i).changescore(1);
+							team_score[Teamstate] += 1;
 							break;
 						case 1 :
 							((Vector<Player>)team[Teamstate]).get(i).changescore(2);
+							team_score[Teamstate] += 2;
 							break;
 						case 2 :
 							((Vector<Player>)team[Teamstate]).get(i).changescore(3);
-							break;
+							team_score[Teamstate] +=3;
+							break;		
 						case 3 :
 							((Vector<Player>)team[Teamstate]).get(i).changefoul(1);
 						}
@@ -203,12 +209,15 @@ public class MainFrame extends JFrame{
 					switch(eventstate) {
 					case 0 :
 						((Vector<Player>)team[Teamstate]).get(count[Teamstate]).changescore(1);
-						break;
+						team_score[Teamstate] += 1;
+						break;						
 					case 1 :
 						((Vector<Player>)team[Teamstate]).get(count[Teamstate]).changescore(2);
+						team_score[Teamstate] += 2;
 						break;
 					case 2 :
 						((Vector<Player>)team[Teamstate]).get(count[Teamstate]).changescore(3);
+						team_score[Teamstate] += 3;
 						break;
 					case 3 :
 						((Vector<Player>)team[Teamstate]).get(count[Teamstate]).changefoul(1);
@@ -217,11 +226,14 @@ public class MainFrame extends JFrame{
 					count[Teamstate]++;
 				}
 				if(Teamstate == 0) {
-					printer(TeamA_Record, (Vector<Player>)team[0], count[Teamstate]);
+					printer(TeamA_Record, (Vector<Player>)team[0], Teamstate);
 				}
 				else {
-					printer(TeamA_Record, (Vector<Player>)team[1], count[Teamstate]);
+					printer(TeamB_Record, (Vector<Player>)team[1], Teamstate);
 				}
+				TeamA_R.setText("Team A : " + team_score[0]);
+				TeamB_R.setText("Team B : " + team_score[1]);
+				
 			}
 		}
 		EnterListener enterlistener = new EnterListener();
@@ -238,10 +250,9 @@ public class MainFrame extends JFrame{
 			String playernum = Integer.toString(player.get(i).returnNumber());
 			String playerScore = Integer.toString(player.get(i).score);
 			String playerfoul = Integer.toString(player.get(i).foul);
-			textarea.append("번호: "+ playernum + "득점: " + playerScore + "파울: " + playerfoul + "\n");
+			textarea.append(playernum+"번 " + "득점: " + playerScore + " 파울: " + playerfoul + "\n");
 		}
 	}
-	
 	
 	public static void main(String[] args) {
 		new MainFrame();
