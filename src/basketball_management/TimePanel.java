@@ -41,9 +41,6 @@ public class TimePanel extends JPanel {
 		this.add(foul, BorderLayout.WEST);
 		this.add(southpanel, BorderLayout.SOUTH);
 		
-		///this.setVisible(true);
-		//setSize(500,200);
-		
 		TimebuttonListener tt = new TimebuttonListener(this);
 		start.addActionListener(tt);
 		stop.addActionListener(tt);
